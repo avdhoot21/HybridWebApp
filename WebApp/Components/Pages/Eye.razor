@@ -1,0 +1,178 @@
+﻿@page "/eye"
+@inject IJSRuntime JSRuntime
+@using Microsoft.JSInterop
+@using System.Text.Json.Serialization
+
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <div class="v3d">
+                <canvas id="threeCanvas"></canvas>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="side-panel">
+                @if (SelectedPoint != null)
+                {
+                    <h3>@SelectedPoint.Place</h3>
+                    <p>@SelectedPoint.Description</p>
+                }
+                else
+                {
+                    <p>Click a point on the eye model to view details.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private ModelPoint? SelectedPoint;
+
+    // Path to the eye.glb model
+    private string ModelPath => "models/eyes_anatomy.glb";
+
+    // Define 10 points for the eye model
+    private List<ModelPoint> ModelPoints => new()
+    {
+        new ModelPoint
+        {
+            Place = "Left Atrium",
+            Description = "Left Atrium: Receives oxygenated blood from the lungs.",
+            Id = "point1",
+            Position = new float[] { 0.1f, 0.2f, 0.1f }
+        },
+        new ModelPoint
+        {
+            Place = "Right Atrium",
+            Description = "Right Atrium: Receives deoxygenated blood from the body.",
+            Id = "point2",
+            Position = new float[] { -0.1f, 0.2f, 0.1f }
+        },
+        new ModelPoint
+        {
+            Place = "Left Ventricle",
+            Description = "Left Ventricle: Pumps oxygenated blood into the aorta.",
+            Id = "point3",
+            Position = new float[] { 0.0f, 0.0f, 0.1f }
+        },
+        new ModelPoint
+        {
+            Place = "Right Ventricle",
+            Description = "Right Ventricle: Pumps deoxygenated blood to the lungs.",
+            Id = "point4",
+            Position = new float[] { 0.0f, -0.1f, 0.1f }
+        },
+        new ModelPoint
+        {
+            Place = "Mitral Valve",
+            Description = "Mitral Valve: Controls blood flow between left atrium and ventricle.",
+            Id = "point5",
+            Position = new float[] { 0.1f, 0.1f, 0.0f }
+        },
+        new ModelPoint
+        {
+            Place = "Tricuspid Valve",
+            Description = "Tricuspid Valve: Controls blood flow between right atrium and ventricle.",
+            Id = "point6",
+            Position = new float[] { -0.1f, 0.1f, 0.0f }
+        },
+        new ModelPoint
+        {
+            Place = "Aortic Valve",
+            Description = "Aortic Valve: Prevents backflow into the left ventricle.",
+            Id = "point7",
+            Position = new float[] { 0.0f, 0.0f, -0.1f }
+        },
+        new ModelPoint
+        {
+            Place = "Pulmonary Valve",
+            Description = "Pulmonary Valve: Prevents backflow into the right ventricle.",
+            Id = "point8",
+            Position = new float[] { 0.0f, -0.1f, -0.1f }
+        },
+        new ModelPoint
+        {
+            Place = "Left Atrial Appendage",
+            Description = "Left Atrial Appendage: Small pouch in the left atrium.",
+            Id = "point9",
+            Position = new float[] { 0.2f, 0.1f, 0.1f }
+        },
+        new ModelPoint
+        {
+            Place = "Right Atrial Appendage",
+            Description = "Right Atrial Appendage: Small pouch in the right atrium.",
+            Id = "point10",
+            Position = new float[] { -0.2f, 0.1f, 0.1f }
+        },
+        new ModelPoint
+        {
+            Place = "Left Coronary Artery",
+            Description = "Left Coronary Artery: Supplies blood to the left heart.",
+            Id = "point11",
+            Position = new float[] { 0.1f, 0.0f, 0.2f }
+        },
+        new ModelPoint
+        {
+            Place = "Right Coronary Artery",
+            Description = "Right Coronary Artery: Supplies blood to the right heart.",
+            Id = "point12",
+            Position = new float[] { -0.1f, 0.0f, 0.2f }
+        },
+        new ModelPoint
+        {
+            Place = "Superior Vena Cava",
+            Description = "Superior Vena Cava: Returns deoxygenated blood from upper body.",
+            Id = "point13",
+            Position = new float[] { 0.0f, 0.2f, -0.1f }
+        },
+        new ModelPoint
+        {
+            Place = "Inferior Vena Cava",
+            Description = "Inferior Vena Cava: Returns deoxygenated blood from lower body.",
+            Id = "point14",
+            Position = new float[] { 0.0f, -0.2f, -0.1f }
+        },
+        new ModelPoint
+        {
+            Place = "Interventricular Septum",
+            Description = "Interventricular Septum: Wall separating the ventricles.",
+            Id = "point15",
+            Position = new float[] { 0.2f, -0.1f, 0.0f }
+        }
+    };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Initialize Three.js with the model path and points
+            await JSRuntime.InvokeVoidAsync("initThreeJs", "threeCanvas", ModelPath, ModelPoints);
+            // Register the callback for point clicks
+            await JSRuntime.InvokeVoidAsync("registerClickCallback", DotNetObjectReference.Create(this));
+        }
+    }
+
+    [JSInvokable]
+    public void OnPointClicked(string pointId)
+    {
+        // Update the selected point and refresh the UI
+        SelectedPoint = ModelPoints.FirstOrDefault(p => p.Id == pointId);
+        StateHasChanged();
+    }
+
+    public class ModelPoint
+    {
+        [JsonPropertyName("place")]
+        public string Place { get; set; } = string.Empty;
+
+        [JsonPropertyName("description")]
+        public string Description { get; set; } = string.Empty;
+
+        [JsonPropertyName("id")]
+        public string Id { get; set; } = string.Empty;
+
+        [JsonPropertyName("position")]
+        public float[] Position { get; set; } = Array.Empty<float>();
+    }
+}

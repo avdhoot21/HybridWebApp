@@ -1,0 +1,120 @@
+﻿@page "/weather"
+@inject IJSRuntime JSRuntime
+@using Microsoft.JSInterop
+@using System.Text.Json.Serialization
+
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <div class="v3d">
+                <canvas id="threeCanvas"></canvas>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="side-panel">
+                @if (SelectedPoint != null)
+                {
+                    <h3>@SelectedPoint.Place</h3>
+                    <p>@SelectedPoint.Description</p>
+                }
+                else
+                {
+                    <p>Click a point on the human body model to view details.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private ModelPoint? SelectedPoint;
+
+    // Path to the humanbody.glb model
+    private string ModelPath => "models/encorche.glb";
+
+    // Define 32 points for the human body model
+    private List<ModelPoint> ModelPoints => new()
+    {
+        new ModelPoint { Place = "Forehead", Description = "Forehead: Frontal part of the head, above the eyes.", Id = "point1", Position = new float[] { 0.0f, 0.95f, 0.1f } },
+        new ModelPoint { Place = "Left Eye", Description = "Left Eye: Organ for vision on the left side of the face.", Id = "point2", Position = new float[] { -0.15f, 0.85f, 0.2f } },
+        new ModelPoint { Place = "Right Eye", Description = "Right Eye: Organ for vision on the right side of the face.", Id = "point3", Position = new float[] { 0.15f, 0.85f, 0.2f } },
+        new ModelPoint { Place = "Nose", Description = "Nose: Facilitates breathing and smell, located centrally on the face.", Id = "point4", Position = new float[] { 0.0f, 0.8f, 0.3f } },
+        new ModelPoint { Place = "Left Ear", Description = "Left Ear: Facilitates hearing and balance on the left side.", Id = "point5", Position = new float[] { -0.2f, 0.8f, 0.0f } },
+        new ModelPoint { Place = "Right Ear", Description = "Right Ear: Facilitates hearing and balance on the right side.", Id = "point6", Position = new float[] { 0.2f, 0.8f, 0.0f } },
+        new ModelPoint { Place = "Mouth", Description = "Mouth: Entry for food and facilitates speech.", Id = "point7", Position = new float[] { 0.0f, 0.75f, 0.2f } },
+        new ModelPoint { Place = "Teeth", Description = "Teeth: Used for chewing and breaking down food.", Id = "point8", Position = new float[] { 0.0f, 0.73f, 0.2f } },
+        new ModelPoint { Place = "Tongue", Description = "Tongue: Aids in taste, speech, and swallowing.", Id = "point9", Position = new float[] { 0.0f, 0.72f, 0.15f } },
+        new ModelPoint { Place = "Neck", Description = "Neck: Connects head to torso, supports head movement.", Id = "point10", Position = new float[] { 0.0f, 0.6f, 0.0f } },
+        new ModelPoint { Place = "Collarbone", Description = "Collarbone: Connects arm to torso, supports shoulder.", Id = "point11", Position = new float[] { 0.0f, 0.55f, 0.0f } },
+        new ModelPoint { Place = "Chest", Description = "Chest: Houses vital organs like the heart and lungs.", Id = "point12", Position = new float[] { 0.0f, 0.4f, 0.0f } },
+        new ModelPoint { Place = "Ribs", Description = "Ribs: Protect chest organs and aid in breathing.", Id = "point13", Position = new float[] { 0.0f, 0.3f, 0.0f } },
+        new ModelPoint { Place = "Spine", Description = "Spine: Provides structural support and protects spinal cord.", Id = "point14", Position = new float[] { 0.0f, 0.0f, -0.1f } },
+        new ModelPoint { Place = "Back", Description = "Back: Supports posture and houses spinal muscles.", Id = "point15", Position = new float[] { 0.0f, 0.0f, -0.2f } },
+        new ModelPoint { Place = "Left Arm", Description = "Left Arm: Used for reaching and manipulating objects.", Id = "point16", Position = new float[] { -0.5f, 0.3f, 0.0f } },
+        new ModelPoint { Place = "Right Arm", Description = "Right Arm: Used for reaching and manipulating objects.", Id = "point17", Position = new float[] { 0.5f, 0.3f, 0.0f } },
+        new ModelPoint { Place = "Left Upper Arm", Description = "Left Upper Arm: Proximal part of the arm, enables lifting.", Id = "point18", Position = new float[] { -0.4f, 0.4f, 0.0f } },
+        new ModelPoint { Place = "Right Upper Arm", Description = "Right Upper Arm: Proximal part of the arm, enables lifting.", Id = "point19", Position = new float[] { 0.4f, 0.4f, 0.0f } },
+        new ModelPoint { Place = "Left Elbow", Description = "Left Elbow: Hinge joint connecting upper arm to forearm.", Id = "point20", Position = new float[] { -0.4f, 0.2f, 0.0f } },
+        new ModelPoint { Place = "Right Elbow", Description = "Right Elbow: Hinge joint connecting upper arm to forearm.", Id = "point21", Position = new float[] { 0.4f, 0.2f, 0.0f } },
+        new ModelPoint { Place = "Left Forearm", Description = "Left Forearm: Distal part of the arm, aids in wrist movement.", Id = "point22", Position = new float[] { -0.4f, 0.1f, 0.0f } },
+        new ModelPoint { Place = "Right Forearm", Description = "Right Forearm: Distal part of the arm, aids in wrist movement.", Id = "point23", Position = new float[] { 0.4f, 0.1f, 0.0f } },
+        new ModelPoint { Place = "Left Wrist", Description = "Left Wrist: Connects forearm to hand, enables hand movement.", Id = "point24", Position = new float[] { -0.4f, 0.0f, 0.0f } },
+        new ModelPoint { Place = "Right Wrist", Description = "Right Wrist: Connects forearm to hand, enables hand movement.", Id = "point25", Position = new float[] { 0.4f, 0.0f, 0.0f } },
+        new ModelPoint { Place = "Left Thigh", Description = "Left Thigh: Upper leg, supports walking and standing.", Id = "point26", Position = new float[] { -0.2f, -0.3f, 0.0f } },
+        new ModelPoint { Place = "Right Thigh", Description = "Right Thigh: Upper leg, supports walking and standing.", Id = "point27", Position = new float[] { 0.2f, -0.3f, 0.0f } },
+        new ModelPoint { Place = "Left Knee", Description = "Left Knee: Hinge joint enabling leg movement.", Id = "point28", Position = new float[] { -0.2f, -0.5f, 0.0f } },
+        new ModelPoint { Place = "Right Knee", Description = "Right Knee: Hinge joint enabling leg movement.", Id = "point29", Position = new float[] { 0.2f, -0.5f, 0.0f } },
+        new ModelPoint { Place = "Left Ankle", Description = "Left Ankle: Connects leg to foot, enables foot movement.", Id = "point30", Position = new float[] { -0.2f, -0.7f, 0.0f } },
+        new ModelPoint { Place = "Right Ankle", Description = "Right Ankle: Connects leg to foot, enables foot movement.", Id = "point31", Position = new float[] { 0.2f, -0.7f, 0.0f } },
+        new ModelPoint { Place = "Left Foot", Description = "Left Foot: Supports balance and locomotion.", Id = "point32", Position = new float[] { -0.2f, -0.8f, 0.0f } },
+        new ModelPoint { Place = "Right Foot", Description = "Right Foot: Supports balance and locomotion.", Id = "point33", Position = new float[] { 0.2f, -0.8f, 0.0f } },
+        new ModelPoint { Place = "Left Heel", Description = "Left Heel: Posterior part of the foot, absorbs impact.", Id = "point34", Position = new float[] { -0.2f, -0.85f, -0.05f } },
+        new ModelPoint { Place = "Right Heel", Description = "Right Heel: Posterior part of the foot, absorbs impact.", Id = "point35", Position = new float[] { 0.2f, -0.85f, -0.05f } },
+        new ModelPoint { Place = "Left Sole", Description = "Left Sole: Underside of the foot, provides traction.", Id = "point36", Position = new float[] { -0.2f, -0.9f, 0.0f } },
+        new ModelPoint { Place = "Right Sole", Description = "Right Sole: Underside of the foot, provides traction.", Id = "point37", Position = new float[] { 0.2f, -0.9f, 0.0f } },
+        new ModelPoint { Place = "Left Toes", Description = "Left Toes: Aid in balance and propulsion during walking.", Id = "point38", Position = new float[] { -0.2f, -0.85f, 0.1f } },
+        new ModelPoint { Place = "Right Toes", Description = "Right Toes: Aid in balance and propulsion during walking.", Id = "point39", Position = new float[] { 0.2f, -0.85f, 0.1f } },
+        new ModelPoint { Place = "Brain", Description = "Brain: Controls bodily functions and cognitive processes.", Id = "point40", Position = new float[] { 0.0f, 0.9f, 0.0f } },
+        new ModelPoint { Place = "Heart", Description = "Heart: Pumps blood throughout the body.", Id = "point41", Position = new float[] { -0.1f, 0.4f, 0.0f } },
+        new ModelPoint { Place = "Left Lung", Description = "Left Lung: Facilitates oxygen exchange in the chest.", Id = "point42", Position = new float[] { -0.2f, 0.4f, 0.0f } },
+        new ModelPoint { Place = "Right Lung", Description = "Right Lung: Facilitates oxygen exchange in the chest.", Id = "point43", Position = new float[] { 0.2f, 0.4f, 0.0f } },
+        new ModelPoint { Place = "Stomach", Description = "Stomach: Digests food through acid and enzymes.", Id = "point44", Position = new float[] { 0.0f, 0.2f, 0.0f } },
+        new ModelPoint { Place = "Liver", Description = "Liver: Detoxifies blood and metabolizes nutrients.", Id = "point45", Position = new float[] { 0.1f, 0.25f, 0.0f } },
+        new ModelPoint { Place = "Left Kidney", Description = "Left Kidney: Filters blood and produces urine.", Id = "point46", Position = new float[] { -0.1f, 0.1f, -0.1f } },
+        new ModelPoint { Place = "Right Kidney", Description = "Right Kidney: Filters blood and produces urine.", Id = "point47", Position = new float[] { 0.1f, 0.1f, -0.1f } }
+    };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Initialize Three.js with the model path and points
+            await JSRuntime.InvokeVoidAsync("initThreeJs", "threeCanvas", ModelPath, ModelPoints);
+            // Register the callback for point clicks
+            await JSRuntime.InvokeVoidAsync("registerClickCallback", DotNetObjectReference.Create(this));
+        }
+    }
+
+    [JSInvokable]
+    public void OnPointClicked(string pointId)
+    {
+        // Update the selected point and refresh the UI
+        SelectedPoint = ModelPoints.FirstOrDefault(p => p.Id == pointId);
+        StateHasChanged();
+    }
+
+    public class ModelPoint
+    {
+        [JsonPropertyName("place")]
+        public string Place { get; set; } = string.Empty;
+
+        [JsonPropertyName("description")]
+        public string Description { get; set; } = string.Empty;
+
+        [JsonPropertyName("id")]
+        public string Id { get; set; } = string.Empty;
+
+        [JsonPropertyName("position")]
+        public float[] Position { get; set; } = Array.Empty<float>();
+    }
+}

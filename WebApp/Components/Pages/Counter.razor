@@ -1,0 +1,110 @@
+﻿@page "/counter"
+@rendermode InteractiveServer
+
+@inject IJSRuntime JSRuntime
+@using Microsoft.JSInterop
+@using System.Text.Json.Serialization
+
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <div class="v3d">
+                <canvas id="threeCanvas"></canvas>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="side-panel">
+                @if (SelectedPoint != null)
+                {
+                    <h3>@SelectedPoint.Place</h3>
+                    <p>@SelectedPoint.Description</p>
+                }
+                else
+                {
+                    <p>Click a point on the teeth model to view details.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private ModelPoint? SelectedPoint;
+
+    // Path to the teeth.glb model
+    private string ModelPath => "models/human_mouth_detailed.glb";
+
+    // Define points for specific teeth with positions and descriptions
+    private List<ModelPoint> ModelPoints => new()
+    {
+        new ModelPoint
+        {
+            Place = "Upper Right Incisor",
+            Description = "Central incisor in the upper right quadrant, used for biting and cutting food.",
+            Id = "point1",
+            Position = new float[] { 0.2f, 0.8f, 0.3f } // Adjusted for teeth model
+        },
+        new ModelPoint
+        {
+            Place = "Lower Left Canine",
+            Description = "Pointed tooth in the lower left quadrant, used for tearing food.",
+            Id = "point2",
+            Position = new float[] { -0.1f, -0.7f, 0.2f }
+        },
+        new ModelPoint
+        {
+            Place = "Upper Left Molar",
+            Description = "Large molar in the upper left quadrant, used for grinding and chewing.",
+            Id = "point3",
+            Position = new float[] { -0.3f, 0.6f, -0.2f }
+        },
+        new ModelPoint
+        {
+            Place = "Lower Right Premolar",
+            Description = "Premolar in the lower right quadrant, aids in chewing and breaking down food.",
+            Id = "point4",
+            Position = new float[] { 0.3f, -0.5f, -0.1f }
+        },
+        new ModelPoint
+        {
+            Place = "Upper Central Incisor",
+            Description = "Central front tooth in the upper jaw, crucial for aesthetics and biting.",
+            Id = "point5",
+            Position = new float[] { 0.0f, 0.8f, 0.4f }
+        }
+    };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Initialize Three.js with the model path and points
+            await JSRuntime.InvokeVoidAsync("initThreeJs", "threeCanvas", ModelPath, ModelPoints);
+            // Register the callback for point clicks
+            await JSRuntime.InvokeVoidAsync("registerClickCallback", DotNetObjectReference.Create(this));
+        }
+    }
+
+    [JSInvokable]
+    public void OnPointClicked(string pointId)
+    {
+        // Update the selected point and refresh the UI
+        SelectedPoint = ModelPoints.FirstOrDefault(p => p.Id == pointId);
+        StateHasChanged();
+    }
+
+    public class ModelPoint
+    {
+        [JsonPropertyName("place")]
+        public string Place { get; set; } = string.Empty;
+
+        [JsonPropertyName("description")]
+        public string Description { get; set; } = string.Empty;
+
+        [JsonPropertyName("id")]
+        public string Id { get; set; } = string.Empty;
+
+        [JsonPropertyName("position")]
+        public float[] Position { get; set; } = Array.Empty<float>();
+    }
+}

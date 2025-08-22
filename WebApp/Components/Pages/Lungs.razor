@@ -1,0 +1,178 @@
+﻿@page "/lungsanatomy"
+@inject IJSRuntime JSRuntime
+@using Microsoft.JSInterop
+@using System.Text.Json.Serialization
+
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <div class="v3d">
+                <canvas id="threeCanvas"></canvas>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="side-panel">
+                @if (SelectedPoint != null)
+                {
+                    <h3>@SelectedPoint.Place</h3>
+                    <p>@SelectedPoint.Description</p>
+                }
+                else
+                {
+                    <p>Click a point on the eye model to view details.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private ModelPoint? SelectedPoint;
+
+    // Path to the eye.glb model
+    private string ModelPath => "models/realistic_human_lungs.glb";
+
+    // Define 10 points for the eye model
+    private List<ModelPoint> ModelPoints => new()
+    {
+        new ModelPoint
+        {
+            Place = "Left Upper Lobe",
+            Description = "Left Upper Lobe: Upper section of the left lung, involved in gas exchange.",
+            Id = "point1",
+            Position = new float[] { 0.1f, 0.3f, 0.1f }
+        },
+        new ModelPoint
+        {
+            Place = "Left Lower Lobe",
+            Description = "Left Lower Lobe: Lower section of the left lung, aids in respiration.",
+            Id = "point2",
+            Position = new float[] { 0.1f, -0.1f, 0.1f }
+        },
+        new ModelPoint
+        {
+            Place = "Right Upper Lobe",
+            Description = "Right Upper Lobe: Upper section of the right lung, includes the apex.",
+            Id = "point3",
+            Position = new float[] { -0.1f, 0.3f, 0.1f }
+        },
+        new ModelPoint
+        {
+            Place = "Right Middle Lobe",
+            Description = "Right Middle Lobe: Middle section of the right lung, unique to this side.",
+            Id = "point4",
+            Position = new float[] { -0.1f, 0.1f, 0.1f }
+        },
+        new ModelPoint
+        {
+            Place = "Right Lower Lobe",
+            Description = "Right Lower Lobe: Lower section of the right lung, supports breathing.",
+            Id = "point5",
+            Position = new float[] { -0.1f, -0.1f, 0.1f }
+        },
+        new ModelPoint
+        {
+            Place = "Trachea",
+            Description = "Trachea: Windpipe that delivers air to the lungs.",
+            Id = "point6",
+            Position = new float[] { 0.0f, 0.2f, 0.0f }
+        },
+        new ModelPoint
+        {
+            Place = "Left Bronchus",
+            Description = "Left Bronchus: Main airway into the left lung.",
+            Id = "point7",
+            Position = new float[] { 0.1f, 0.1f, 0.0f }
+        },
+        new ModelPoint
+        {
+            Place = "Right Bronchus",
+            Description = "Right Bronchus: Main airway into the right lung.",
+            Id = "point8",
+            Position = new float[] { -0.1f, 0.1f, 0.0f }
+        },
+        new ModelPoint
+        {
+            Place = "Diaphragm",
+            Description = "Diaphragm: Muscle below the lungs aiding in breathing.",
+            Id = "point9",
+            Position = new float[] { 0.0f, -0.3f, 0.0f }
+        },
+        new ModelPoint
+        {
+            Place = "Pleura",
+            Description = "Pleura: Thin membrane surrounding the lungs.",
+            Id = "point10",
+            Position = new float[] { 0.2f, 0.0f, 0.0f }
+        },
+        new ModelPoint
+        {
+            Place = "Alveoli",
+            Description = "Alveoli: Tiny air sacs where gas exchange occurs.",
+            Id = "point11",
+            Position = new float[] { 0.1f, 0.0f, 0.2f }
+        },
+        new ModelPoint
+        {
+            Place = "Bronchioles",
+            Description = "Bronchioles: Smaller airways leading to alveoli.",
+            Id = "point12",
+            Position = new float[] { -0.1f, 0.0f, 0.2f }
+        },
+        new ModelPoint
+        {
+            Place = "Pulmonary Artery",
+            Description = "Pulmonary Artery: Carries deoxygenated blood to the lungs.",
+            Id = "point13",
+            Position = new float[] { 0.0f, 0.2f, -0.1f }
+        },
+        new ModelPoint
+        {
+            Place = "Pulmonary Vein",
+            Description = "Pulmonary Vein: Returns oxygenated blood to the heart.",
+            Id = "point14",
+            Position = new float[] { 0.0f, -0.2f, -0.1f }
+        },
+        new ModelPoint
+        {
+            Place = "Hilum",
+            Description = "Hilum: Area where blood vessels and bronchi enter the lungs.",
+            Id = "point15",
+            Position = new float[] { 0.0f, 0.0f, -0.2f }
+        }
+    };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Initialize Three.js with the model path and points
+            await JSRuntime.InvokeVoidAsync("initThreeJs", "threeCanvas", ModelPath, ModelPoints);
+            // Register the callback for point clicks
+            await JSRuntime.InvokeVoidAsync("registerClickCallback", DotNetObjectReference.Create(this));
+        }
+    }
+
+    [JSInvokable]
+    public void OnPointClicked(string pointId)
+    {
+        // Update the selected point and refresh the UI
+        SelectedPoint = ModelPoints.FirstOrDefault(p => p.Id == pointId);
+        StateHasChanged();
+    }
+
+    public class ModelPoint
+    {
+        [JsonPropertyName("place")]
+        public string Place { get; set; } = string.Empty;
+
+        [JsonPropertyName("description")]
+        public string Description { get; set; } = string.Empty;
+
+        [JsonPropertyName("id")]
+        public string Id { get; set; } = string.Empty;
+
+        [JsonPropertyName("position")]
+        public float[] Position { get; set; } = Array.Empty<float>();
+    }
+}

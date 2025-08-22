@@ -1,0 +1,143 @@
+﻿@page "/heartanatomy"
+@inject IJSRuntime JSRuntime
+@using Microsoft.JSInterop
+@using System.Text.Json.Serialization
+
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <div class="v3d">
+                <canvas id="threeCanvas"></canvas>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="side-panel">
+                @if (SelectedPoint != null)
+                {
+                    <h3>@SelectedPoint.Place</h3>
+                    <p>@SelectedPoint.Description</p>
+                }
+                else
+                {
+                    <p>Click a point on the eye model to view details.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private ModelPoint? SelectedPoint;
+
+    // Path to the eye.glb model
+    private string ModelPath => "models/human_heart.glb";
+
+    // Define 10 points for the eye model
+    private List<ModelPoint> ModelPoints => new()
+    {
+        new ModelPoint
+        {
+            Place = "Cornea",
+            Description = "Cornea: Transparent front layer that refracts light into the eye.",
+            Id = "point1",
+            Position = new float[] { 0.0f, 0.0f, 0.4f } // Front surface
+        },
+        new ModelPoint
+        {
+            Place = "Iris",
+            Description = "Iris: Colored part that controls pupil size and light entry.",
+            Id = "point2",
+            Position = new float[] { 0.0f, 0.0f, 0.3f } // Behind cornea
+        },
+        new ModelPoint
+        {
+            Place = "Pupil",
+            Description = "Pupil: Opening in the iris that allows light to enter the eye.",
+            Id = "point3",
+            Position = new float[] { 0.0f, 0.0f, 0.25f } // Center of iris
+        },
+        new ModelPoint
+        {
+            Place = "Lens",
+            Description = "Lens: Focuses light onto the retina for clear vision.",
+            Id = "point4",
+            Position = new float[] { 0.0f, 0.0f, 0.1f } // Inside the eye
+        },
+        new ModelPoint
+        {
+            Place = "Retina",
+            Description = "Retina: Light-sensitive layer that converts light into neural signals.",
+            Id = "point5",
+            Position = new float[] { 0.0f, 0.0f, -0.4f } // Back of the eye
+        },
+        new ModelPoint
+        {
+            Place = "Optic Nerve",
+            Description = "Optic Nerve: Transmits visual information from retina to brain.",
+            Id = "point6",
+            Position = new float[] { 0.0f, 0.0f, -0.5f } // Behind retina
+        },
+        new ModelPoint
+        {
+            Place = "Sclera",
+            Description = "Sclera: White outer layer that provides structural support.",
+            Id = "point7",
+            Position = new float[] { 0.3f, 0.0f, 0.0f } // Side of the eye
+        },
+        new ModelPoint
+        {
+            Place = "Vitreous Humor",
+            Description = "Vitreous Humor: Gel-like substance maintaining eye shape.",
+            Id = "point8",
+            Position = new float[] { 0.0f, 0.0f, -0.1f } // Inside the eye
+        },
+        new ModelPoint
+        {
+            Place = "Ciliary Muscle",
+            Description = "Ciliary Muscle: Adjusts lens shape for focusing near or far.",
+            Id = "point9",
+            Position = new float[] { 0.2f, 0.2f, 0.0f } // Near lens
+        },
+        new ModelPoint
+        {
+            Place = "Aqueous Humor",
+            Description = "Aqueous Humor: Fluid nourishing the cornea and lens.",
+            Id = "point10",
+            Position = new float[] { 0.0f, 0.0f, 0.2f } // Behind cornea
+        }
+    };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Initialize Three.js with the model path and points
+            await JSRuntime.InvokeVoidAsync("initThreeJs", "threeCanvas", ModelPath, ModelPoints);
+            // Register the callback for point clicks
+            await JSRuntime.InvokeVoidAsync("registerClickCallback", DotNetObjectReference.Create(this));
+        }
+    }
+
+    [JSInvokable]
+    public void OnPointClicked(string pointId)
+    {
+        // Update the selected point and refresh the UI
+        SelectedPoint = ModelPoints.FirstOrDefault(p => p.Id == pointId);
+        StateHasChanged();
+    }
+
+    public class ModelPoint
+    {
+        [JsonPropertyName("place")]
+        public string Place { get; set; } = string.Empty;
+
+        [JsonPropertyName("description")]
+        public string Description { get; set; } = string.Empty;
+
+        [JsonPropertyName("id")]
+        public string Id { get; set; } = string.Empty;
+
+        [JsonPropertyName("position")]
+        public float[] Position { get; set; } = Array.Empty<float>();
+    }
+}

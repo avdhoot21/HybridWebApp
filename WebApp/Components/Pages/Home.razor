@@ -1,0 +1,140 @@
+﻿@page "/"
+@inject IJSRuntime JSRuntime
+@using Microsoft.JSInterop
+@using System.Text.Json.Serialization
+
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <div class="v3d">
+                <canvas id="threeCanvas"></canvas>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="side-panel">
+                @if (SelectedPoint != null)
+                {
+                    <h3>@SelectedPoint.Place</h3>
+                    <p>@SelectedPoint.Description</p>
+                }
+                else
+                {
+                    <p>Click a point on the model to view details.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private ModelPoint? SelectedPoint;
+
+    private string ModelPath => "models/heartbeat.glb"; // Define the model path here
+
+    // Define 10 points for the heart model
+    private List<ModelPoint> ModelPoints => new()
+    {
+        new ModelPoint
+        {
+            Place = "Left Atrium",
+            Description = "Left Atrium: Receives oxygenated blood from the pulmonary veins.",
+            Id = "point1",
+            Position = new float[] { -0.3f, 0.7f, 0.2f  }
+        },
+        new ModelPoint
+        {
+            Place = "Left Ventricle",
+            Description = "Left Ventricle: Pumps oxygenated blood into the aorta.",
+            Id = "point2",
+            Position = new float[] { -0.3f, 0.3f, 0.2f }
+        },
+        new ModelPoint
+        {
+            Place = "Right Atrium",
+            Description = "Right Atrium: Receives deoxygenated blood from the vena cava.",
+            Id = "point3",
+            Position = new float[] { 0.3f, 0.7f, 0.2f }
+        },
+        new ModelPoint
+        {
+            Place = "Right Ventricle",
+            Description = "Right Ventricle: Pumps deoxygenated blood to the pulmonary arteries.",
+            Id = "point4",
+            Position = new float[] { 0.3f, 0.3f, 0.2f }
+        },
+        new ModelPoint
+        {
+            Place = "Aorta",
+            Description = "Aorta: Main artery carrying oxygenated blood from the heart.",
+            Id = "point5",
+            Position = new float[] { 0.0f, 0.8f, 0.0f }
+        },
+        new ModelPoint
+        {
+            Place = "Pulmonary Artery",
+            Description = "Pulmonary Artery: Carries deoxygenated blood to the lungs.",
+            Id = "point6",
+            Position = new float[] { 0.0f, 0.6f, 0.1f }
+        },
+        new ModelPoint
+        {
+            Place = "Mitral Valve",
+            Description = "Mitral Valve: Regulates blood flow between left atrium and ventricle.",
+            Id = "point7",
+            Position = new float[] { -0.3f, 0.5f, 0.2f }
+        },
+        new ModelPoint
+        {
+            Place = "Tricuspid Valve",
+            Description = "Tricuspid Valve: Regulates blood flow between right atrium and ventricle.",
+            Id = "point8",
+            Position = new float[] { 0.3f, 0.5f, 0.2f }
+        },
+        new ModelPoint
+        {
+            Place = "Pulmonary Valve",
+            Description = "Pulmonary Valve: Controls blood flow from right ventricle to pulmonary artery.",
+            Id = "point9",
+            Position = new float[] { 0.0f, 0.4f, 0.1f }
+        },
+        new ModelPoint
+        {
+            Place = "Aortic Valve",
+            Description = "Aortic Valve: Controls blood flow from left ventricle to aorta.",
+            Id = "point10",
+            Position = new float[] { 0.0f, 0.4f, 0.0f }
+        }
+    };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Pass both the model path and model points to initThreeJs
+            await JSRuntime.InvokeVoidAsync("initThreeJs", "threeCanvas", ModelPath, ModelPoints);
+            await JSRuntime.InvokeVoidAsync("registerClickCallback", DotNetObjectReference.Create(this));
+        }
+    }
+
+    [JSInvokable]
+    public void OnPointClicked(string pointId)
+    {
+        SelectedPoint = ModelPoints.FirstOrDefault(p => p.Id == pointId);
+        StateHasChanged();
+    }
+
+    public class ModelPoint
+    {
+        [JsonPropertyName("place")]
+        public string Place { get; set; } = string.Empty;
+
+        [JsonPropertyName("description")]
+        public string Description { get; set; } = string.Empty;
+
+        [JsonPropertyName("id")]
+        public string Id { get; set; } = string.Empty;
+
+        [JsonPropertyName("position")]
+        public float[] Position { get; set; } = Array.Empty<float>();
+    }
+}

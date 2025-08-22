@@ -1,0 +1,99 @@
+﻿@page "/humanbody"
+@rendermode InteractiveServer
+
+@inject IJSRuntime JSRuntime
+@using Microsoft.JSInterop
+@using System.Text.Json.Serialization
+
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <div class="v3d">
+                <!-- Sketchfab embed for HUMAN DIGESTIVE SYSTEM -->
+                <div class="sketchfab-embed-wrapper">
+                    <iframe title="HUMAN DIGESTIVE SYSTEM" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share src="https://sketchfab.com/models/a30cbfe5ddbf4d17a8144e741e59a8bf/embed"></iframe>
+                    <p style="font-size: 13px; font-weight: normal; margin: 5px; color: #4A4A4A;">
+                        <a href="https://sketchfab.com/3d-models/human-digestive-system-a30cbfe5ddbf4d17a8144e741e59a8bf?utm_medium=embed&utm_campaign=share-popup&utm_content=a30cbfe5ddbf4d17a8144e741e59a8bf" target="_blank" rel="nofollow" style="font-weight: bold; color: #1CAAD9;">HUMAN DIGESTIVE SYSTEM</a> by
+                        <a href="https://sketchfab.com/MarcoRomero?utm_medium=embed&utm_campaign=share-popup&utm_content=a30cbfe5ddbf4d17a8144e741e59a8bf" target="_blank" rel="nofollow" style="font-weight: bold; color: #1CAAD9;">Marco_Romero</a> on
+                        <a href="https://sketchfab.com?utm_medium=embed&utm_campaign=share-popup&utm_content=a30cbfe5ddbf4d17a8144e741e59a8bf" target="_blank" rel="nofollow" style="font-weight: bold; color: #1CAAD9;">Sketchfab</a>
+                    </p>
+                </div>
+                <!-- Overlay for clickable points -->
+                <div class="point-overlay" @onmousedown="HandlePointClick">
+                    @foreach (var point in ModelPoints)
+                    {
+                        <div class="point" style="left: @point.Position[0]%; top: @point.Position[1]%;"
+                             data-id="@point.Id"></div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="side-panel">
+                @if (SelectedPoint != null)
+                {
+                    <h3>@SelectedPoint.Place</h3>
+                    <p>@SelectedPoint.Description</p>
+                }
+                else
+                {
+                    <p>Click a point on the digestive system model to view details.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private ModelPoint? SelectedPoint;
+
+    // Define points for the digestive system model with percentage-based positions
+    private List<ModelPoint> ModelPoints => new()
+    {
+        new ModelPoint { Place = "Mouth", Description = "Entry point for food intake.", Id = "point1", Position = new float[] { 50f, 20f, 0f } },
+        new ModelPoint { Place = "Esophagus", Description = "Tube transporting food to the stomach.", Id = "point2", Position = new float[] { 50f, 30f, 0f } },
+        new ModelPoint { Place = "Stomach", Description = "Organ where food is digested.", Id = "point3", Position = new float[] { 50f, 40f, 0f } },
+        new ModelPoint { Place = "Small Intestine", Description = "Absorbs nutrients from digested food.", Id = "point4", Position = new float[] { 50f, 50f, 0f } },
+        new ModelPoint { Place = "Large Intestine", Description = "Absorbs water and forms feces.", Id = "point5", Position = new float[] { 50f, 60f, 0f } },
+        new ModelPoint { Place = "Liver", Description = "Produces bile and detoxifies blood.", Id = "point6", Position = new float[] { 40f, 45f, 0f } },
+        new ModelPoint { Place = "Gallbladder", Description = "Stores bile produced by the liver.", Id = "point7", Position = new float[] { 45f, 50f, 0f } },
+        new ModelPoint { Place = "Pancreas", Description = "Releases digestive enzymes and hormones.", Id = "point8", Position = new float[] { 55f, 55f, 0f } },
+        new ModelPoint { Place = "Appendix", Description = "Small tube with possible immune function.", Id = "point9", Position = new float[] { 60f, 65f, 0f } },
+        new ModelPoint { Place = "Rectum", Description = "Final section for waste storage.", Id = "point10", Position = new float[] { 50f, 70f, 0f } }
+    };
+
+    private void HandlePointClick(MouseEventArgs e)
+    {
+        // Get the target element from the event
+        // var target = e..Target as Microsoft.AspNetCore.Components.Web.IElement;
+        // if (target != null)
+        // {
+        //     // Check if the target or its parent has the 'point' class
+        //     var pointElement = target.ClassList.Contains("point") ? target : target.Closest(".point") as Microsoft.AspNetCore.Components.Web.IElement;
+        //     if (pointElement != null)
+        //     {
+        //         var pointId = pointElement.GetAttribute("data-id");
+        //         if (!string.IsNullOrEmpty(pointId))
+        //         {
+        //             SelectedPoint = ModelPoints.FirstOrDefault(p => p.Id == pointId);
+        //             StateHasChanged();
+        //         }
+        //     }
+        // }
+    }
+
+    public class ModelPoint
+    {
+        [JsonPropertyName("place")]
+        public string Place { get; set; } = string.Empty;
+
+        [JsonPropertyName("description")]
+        public string Description { get; set; } = string.Empty;
+
+        [JsonPropertyName("id")]
+        public string Id { get; set; } = string.Empty;
+
+        [JsonPropertyName("position")]
+        public float[] Position { get; set; } = Array.Empty<float>(); // [x%, y%, z%] where z is unused here
+    }
+}
