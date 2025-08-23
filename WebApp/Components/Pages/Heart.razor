@@ -30,81 +30,116 @@
     private ModelPoint? SelectedPoint;
 
     // Path to the eye.glb model
-    private string ModelPath => "models/human_heart.glb";
+    private string ModelPath => "models/heartannot.glb";
 
     // Define 10 points for the eye model
     private List<ModelPoint> ModelPoints => new()
     {
-        new ModelPoint
+         new ModelPoint
         {
-            Place = "Cornea",
-            Description = "Cornea: Transparent front layer that refracts light into the eye.",
+            Place = "Left Atrium",
+            Description = "Left Atrium: Receives oxygenated blood from the pulmonary veins.",
             Id = "point1",
-            Position = new float[] { 0.0f, 0.0f, 0.4f } // Front surface
+            Position = new float[] { 0.3f, 0.1f, 0.8f  }
         },
         new ModelPoint
         {
-            Place = "Iris",
-            Description = "Iris: Colored part that controls pupil size and light entry.",
+            Place = "Left Ventricle",
+            Description = "Left Ventricle: Pumps oxygenated blood into the aorta.",
             Id = "point2",
-            Position = new float[] { 0.0f, 0.0f, 0.3f } // Behind cornea
+            Position = new float[] { 0.6f, -0.6f, 0.8f  }
         },
         new ModelPoint
         {
-            Place = "Pupil",
-            Description = "Pupil: Opening in the iris that allows light to enter the eye.",
+            Place = "Right Atrium",
+            Description = "Right Atrium: Receives deoxygenated blood from the vena cava.",
             Id = "point3",
-            Position = new float[] { 0.0f, 0.0f, 0.25f } // Center of iris
+            Position = new float[] { -0.8f, 0.2f, 0.9f }
         },
         new ModelPoint
         {
-            Place = "Lens",
-            Description = "Lens: Focuses light onto the retina for clear vision.",
+            Place = "Right Ventricle",
+            Description = "Right Ventricle: Pumps deoxygenated blood to the pulmonary arteries.",
             Id = "point4",
-            Position = new float[] { 0.0f, 0.0f, 0.1f } // Inside the eye
+            Position = new float[] { -0.3f, -0.9f, 0.8f }
         },
         new ModelPoint
         {
-            Place = "Retina",
-            Description = "Retina: Light-sensitive layer that converts light into neural signals.",
+            Place = "Aorta",
+            Description = "Aorta: Main artery carrying oxygenated blood from the heart.",
             Id = "point5",
-            Position = new float[] { 0.0f, 0.0f, -0.4f } // Back of the eye
+            Position = new float[] { 0.1f, 0.9f, 0.2f }
         },
         new ModelPoint
         {
-            Place = "Optic Nerve",
-            Description = "Optic Nerve: Transmits visual information from retina to brain.",
+            Place = "Pulmonary Artery",
+            Description = "Pulmonary Artery: Carries deoxygenated blood to the lungs.",
             Id = "point6",
-            Position = new float[] { 0.0f, 0.0f, -0.5f } // Behind retina
+            Position = new float[] { 0.5f, 0.7f, 0.7f }
         },
         new ModelPoint
         {
-            Place = "Sclera",
-            Description = "Sclera: White outer layer that provides structural support.",
+            Place = "Mitral Valve",
+            Description = "Mitral Valve: Regulates blood flow between left atrium and ventricle.",
             Id = "point7",
-            Position = new float[] { 0.3f, 0.0f, 0.0f } // Side of the eye
+            Position = new float[] { 0.5f, -0.1f, 0.8f }
         },
         new ModelPoint
         {
-            Place = "Vitreous Humor",
-            Description = "Vitreous Humor: Gel-like substance maintaining eye shape.",
+            Place = "Tricuspid Valve",
+            Description = "Tricuspid Valve: Regulates blood flow between right atrium and ventricle.",
             Id = "point8",
-            Position = new float[] { 0.0f, 0.0f, -0.1f } // Inside the eye
+            Position = new float[] { -0.8f, -0.2f, 0.9f }
         },
         new ModelPoint
         {
-            Place = "Ciliary Muscle",
-            Description = "Ciliary Muscle: Adjusts lens shape for focusing near or far.",
+            Place = "Pulmonary Valve",
+            Description = "Pulmonary Valve: Controls blood flow from right ventricle to pulmonary artery.",
             Id = "point9",
-            Position = new float[] { 0.2f, 0.2f, 0.0f } // Near lens
+            Position = new float[] { -0.2f, -0.1f, 0.9f }
         },
         new ModelPoint
         {
-            Place = "Aqueous Humor",
-            Description = "Aqueous Humor: Fluid nourishing the cornea and lens.",
+            Place = "Aortic Valve",
+            Description = "Aortic Valve: Controls blood flow from left ventricle to aorta.",
             Id = "point10",
-            Position = new float[] { 0.0f, 0.0f, 0.2f } // Behind cornea
-        }
+            Position = new float[] { 0.3f, -0.2f, 0.8f }
+        },
+         new ModelPoint
+        {
+            Place = "Superior vena cava",
+            Description = "Superior vena cava",
+            Id = "point11",
+            Position = new float[] { -0.8f, 0.7f, 0.2f  }
+        },
+        new ModelPoint
+        {
+            Place = "Left Atrium",
+            Description = "Left Atrium: Receives oxygenated blood from the pulmonary veins.",
+            Id = "point12",
+            Position = new float[] { -0.3f, 0.7f, 0.2f  }
+        },
+        new ModelPoint
+        {
+            Place = "Inferior vena cava",
+            Description = "Inferior vena cava",
+            Id = "point13",
+            Position = new float[] { -0.8f, -0.9f, -0.3f  }
+        },
+        new ModelPoint
+        {
+            Place = "Ventricular Septum",
+            Description = "Ventricular Septum",
+            Id = "point14",
+            Position = new float[] { 0.6f, -0.9f, 0.4f  }
+        },
+        new ModelPoint
+        {
+            Place = "Pulmonary Vein",
+            Description = "Pulmonary Vein",
+            Id = "point15",
+            Position = new float[] {  0.9f, 0.4f, 0.2f  }
+        },
     };
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
