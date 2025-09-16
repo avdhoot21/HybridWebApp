@@ -30,7 +30,7 @@
     private ModelPoint? SelectedPoint;
 
     // Path to the humanbody.glb model
-    private string ModelPath => "models/humanbody.glb";
+    private string ModelPath => "models/malehumanbody.glb";
 
     // Define 32 points for the human body model
     private List<ModelPoint> ModelPoints => new()
@@ -39,14 +39,14 @@
         new ModelPoint { Place = "Left Eye", Description = "Left Eye: Organ for vision on the left side of the face.", Id = "point2", Position = new float[] { -0.07f, 0.86f,0.08f } },
          new ModelPoint { Place = "Right Eye", Description = "Right Eye: Organ for vision on the right side of the face.", Id = "point3", Position = new float[] { 0.07f, 0.86f, 0.08f } },
          new ModelPoint { Place = "Nose", Description = "Nose: Facilitates breathing and smell, located centrally on the face.", Id = "point4", Position = new float[] { -0.00f, 0.84f, 0.11f } },
-         new ModelPoint { Place = "Left Ear", Description = "Left Ear: Facilitates hearing and balance on the left side.", Id = "point5", Position = new float[] { -0.10f, 0.86f, -0.06f } },
-         new ModelPoint { Place = "Right Ear", Description = "Right Ear: Facilitates hearing and balance on the right side.", Id = "point6", Position = new float[] { 0.11f, 0.87f, -0.04f } },
+         new ModelPoint { Place = "Left Ear", Description = "Left Ear: Facilitates hearing and balance on the left side.", Id = "point5", Position = new float[] { 0.04f, 0.42f, 0.01f } },
+         new ModelPoint { Place = "Right Ear", Description = "Right Ear: Facilitates hearing and balance on the right side.", Id = "point6", Position = new float[] { 0.11f, 0.75f, -0.54f } },
          new ModelPoint { Place = "Mouth", Description = "Mouth: Entry for food and facilitates speech.", Id = "point7", Position = new float[] { -0.03f, 0.77f, 0.09f } },
         // new ModelPoint { Place = "Teeth", Description = "Teeth: Used for chewing and breaking down food.", Id = "point8", Position = new float[] { 0.0f, 0.73f, 0.2f } },
         // new ModelPoint { Place = "Tongue", Description = "Tongue: Aids in taste, speech, and swallowing.", Id = "point9", Position = new float[] { 0.0f, 0.72f, 0.15f } },
-         new ModelPoint { Place = "Neck", Description = "Neck: Connects head to torso, supports head movement.", Id = "point10", Position = new float[] { 0.00f, 0.71f, 0.05f } },
+         new ModelPoint { Place = "Neck", Description = "Neck: Connects head to torso, supports head movement.", Id = "point10", Position = new float[] { 0.04f, 0.52f, 0.12f } },
         // new ModelPoint { Place = "Collarbone", Description = "Collarbone: Connects arm to torso, supports shoulder.", Id = "point11", Position = new float[] { 0.0f, 0.55f, 0.0f } },
-         new ModelPoint { Place = "Chest", Description = "Chest: Houses vital organs like the heart and lungs.", Id = "point12", Position = new float[] { 0.08f, 0.54f, 0.11f } },
+         new ModelPoint { Place = "Chest", Description = "Chest: Houses vital organs like the heart and lungs.", Id = "point12", Position = new float[] { 0.05f,  0.25f, 0.03f } },
         // new ModelPoint { Place = "Ribs", Description = "Ribs: Protect chest organs and aid in breathing.", Id = "point13", Position = new float[] { 0.0f, 0.3f, 0.0f } },
         // new ModelPoint { Place = "Spine", Description = "Spine: Provides structural support and protects spinal cord.", Id = "point14", Position = new float[] { 0.0f, 0.0f, -0.1f } },
          new ModelPoint { Place = "Back", Description = "Back: Supports posture and houses spinal muscles.", Id = "point15", Position = new float[] { -0.00f, 0.53f, -0.19f } },
