@@ -238,7 +238,7 @@ window.initThreeJs = (canvasId, modelPath, modelPoints) => {
             }
 
             // Adjust camera for fixed size
-            const cameraDistance = 5; // Fixed distance for normalized size of 1 unit
+            const cameraDistance = 4; // Fixed distance for normalized size of 1 unit
             camera.position.set(0, 0.5, cameraDistance); // Camera above and at fixed distance
             controls.target.set(0, 0, 0); // Look at model center
             controls.update();
