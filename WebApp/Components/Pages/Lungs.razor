@@ -30,115 +30,164 @@
     private ModelPoint? SelectedPoint;
 
     // Path to the eye.glb model
-    private string ModelPath => "models/realistic_human_lungs.glb";
+    private string ModelPath => "models/adult_heart_and_lungs.glb";
 
     // Define 10 points for the eye model
     private List<ModelPoint> ModelPoints => new()
     {
         new ModelPoint
         {
-            Place = "Left Upper Lobe",
+            Place = "Trachea",
             Description = "Left Upper Lobe: Upper section of the left lung, involved in gas exchange.",
             Id = "point1",
-            Position = new float[] { 0.1f, 0.3f, 0.1f }
+            Position = new float[] { 0.00f, 0.09f, 0.02f }
         },
         new ModelPoint
         {
-            Place = "Left Lower Lobe",
+            Place = "ThyroidCartilage",
             Description = "Left Lower Lobe: Lower section of the left lung, aids in respiration.",
             Id = "point2",
-            Position = new float[] { 0.1f, -0.1f, 0.1f }
+            Position = new float[] { 0.00f, 0.08f, 0.01f }
         },
         new ModelPoint
         {
-            Place = "Right Upper Lobe",
+            Place = "CricoidCartilage",
             Description = "Right Upper Lobe: Upper section of the right lung, includes the apex.",
             Id = "point3",
-            Position = new float[] { -0.1f, 0.3f, 0.1f }
+            Position = new float[] { 0.00f, 0.07f, 0.01f }
         },
         new ModelPoint
         {
-            Place = "Right Middle Lobe",
+            Place = "Apex",
             Description = "Right Middle Lobe: Middle section of the right lung, unique to this side.",
             Id = "point4",
-            Position = new float[] { -0.1f, 0.1f, 0.1f }
+            Position = new float[] { 0.01f, 0.09f, 0.02f }
         },
         new ModelPoint
         {
-            Place = "Right Lower Lobe",
+            Place = "LeftUpperLobe",
             Description = "Right Lower Lobe: Lower section of the right lung, supports breathing.",
             Id = "point5",
-            Position = new float[] { -0.1f, -0.1f, 0.1f }
+            Position = new float[] { 0.02f, 0.02f, 0.01f }
         },
         new ModelPoint
         {
-            Place = "Trachea",
+            Place = "RightUpperLobe",
             Description = "Trachea: Windpipe that delivers air to the lungs.",
-            Id = "point6",
-            Position = new float[] { 0.0f, 0.2f, 0.0f }
-        },
-        new ModelPoint
-        {
-            Place = "Left Bronchus",
-            Description = "Left Bronchus: Main airway into the left lung.",
-            Id = "point7",
-            Position = new float[] { 0.1f, 0.1f, 0.0f }
-        },
-        new ModelPoint
-        {
-            Place = "Right Bronchus",
-            Description = "Right Bronchus: Main airway into the right lung.",
-            Id = "point8",
-            Position = new float[] { -0.1f, 0.1f, 0.0f }
-        },
-        new ModelPoint
-        {
-            Place = "Diaphragm",
-            Description = "Diaphragm: Muscle below the lungs aiding in breathing.",
-            Id = "point9",
-            Position = new float[] { 0.0f, -0.3f, 0.0f }
-        },
-        new ModelPoint
-        {
-            Place = "Pleura",
-            Description = "Pleura: Thin membrane surrounding the lungs.",
-            Id = "point10",
-            Position = new float[] { 0.2f, 0.0f, 0.0f }
-        },
-        new ModelPoint
-        {
-            Place = "Alveoli",
-            Description = "Alveoli: Tiny air sacs where gas exchange occurs.",
-            Id = "point11",
-            Position = new float[] { 0.1f, 0.0f, 0.2f }
-        },
-        new ModelPoint
-        {
-            Place = "Bronchioles",
-            Description = "Bronchioles: Smaller airways leading to alveoli.",
-            Id = "point12",
-            Position = new float[] { -0.1f, 0.0f, 0.2f }
-        },
-        new ModelPoint
-        {
-            Place = "Pulmonary Artery",
-            Description = "Pulmonary Artery: Carries deoxygenated blood to the lungs.",
-            Id = "point13",
-            Position = new float[] { 0.0f, 0.2f, -0.1f }
-        },
-        new ModelPoint
-        {
-            Place = "Pulmonary Vein",
-            Description = "Pulmonary Vein: Returns oxygenated blood to the heart.",
-            Id = "point14",
-            Position = new float[] { 0.0f, -0.2f, -0.1f }
+            Id = "RightUpperLobe",
+            Position = new float[] { -0.03f, 0.02f, 0.01f }
         },
         new ModelPoint
         {
             Place = "Hilum",
+            Description = "Left Bronchus: Main airway into the left lung.",
+            Id = "Hilum",
+            Position = new float[] { -0.02f, 0.01f, 0.00f }
+        },
+        new ModelPoint
+        {
+            Place = "ObliqueFissure",
+            Description = "Right Bronchus: Main airway into the right lung.",
+            Id = "ObliqueFissure",
+            Position = new float[] { -0.04f, -0.01f, 0.01f }
+        },
+        new ModelPoint
+        {
+            Place = "RightMiddleLobe",
+            Description = "Diaphragm: Muscle below the lungs aiding in breathing.",
+            Id = "RightMiddleLobe",
+            Position = new float[] {  -0.02f, 0.00f, 0.01f  }
+        },
+        new ModelPoint
+        {
+            Place = "RightLowerLobe",
+            Description = "Pleura: Thin membrane surrounding the lungs.",
+            Id = "RightLowerLobe",
+            Position = new float[] { -0.04f, -0.02f, 0.01f }
+        },
+        new ModelPoint
+        {
+            Place = "BaseOfLung",
+            Description = "Alveoli: Tiny air sacs where gas exchange occurs.",
+            Id = "BaseOfLung",
+            Position = new float[] { -0.04f, -0.03f, 0.01f }
+        },
+        new ModelPoint
+        {
+            Place = "CardiacNotch",
+            Description = "CardiacNotch",
+            Id = "CardiacNotch",
+            Position = new float[] { 0.04f, -0.03f, -0.01f  }
+        },
+        new ModelPoint
+        {
+            Place = "RightBronchus",
+            Description = "Pulmonary Artery: Carries deoxygenated blood to the lungs.",
+            Id = "RightBronchus",
+            Position = new float[] { -0.01f, 0.02f, -0.00f }
+        },
+        new ModelPoint
+        {
+            Place = "LeftBronchus",
+            Description = "Pulmonary Artery: Carries deoxygenated blood to the lungs.",
+            Id = "LeftBronchus",
+            Position = new float[] { 0.01f, 0.02f, -0.00f }
+        },
+        new ModelPoint
+        {
+            Place = "Bronchioles",
+            Description = "Pulmonary Vein: Returns oxygenated blood to the heart.",
+            Id = "Bronchioles",
+            Position = new float[] { 0.04f, -0.02f, -0.01f }
+        },
+        new ModelPoint
+        {
+            Place = "PrimaryBronchi",
+            Description = "Pulmonary Vein: Returns oxygenated blood to the heart.",
+            Id = "PrimaryBronchi",
+            Position = new float[] { -0.015f, 0.015f, 0.00f }
+        },
+        new ModelPoint
+        {
+            Place = "SecondaryBronchi",
             Description = "Hilum: Area where blood vessels and bronchi enter the lungs.",
-            Id = "point15",
-            Position = new float[] { 0.0f, 0.0f, -0.2f }
+            Id = "SecondaryBronchi",
+            Position = new float[] { -0.03f, 0.01f, 0.00f }
+        },
+        new ModelPoint
+        {
+            Place = "TertiaryBronchi",
+            Description = "Hilum: Area where blood vessels and bronchi enter the lungs.",
+            Id = "TertiaryBronchi",
+            Position = new float[] { -0.035f, 0.01f, 0.01f }
+        },
+        new ModelPoint
+        {
+            Place = "PulmonaryArtery",
+            Description = "Hilum: Area where blood vessels and bronchi enter the lungs.",
+            Id = "PulmonaryArtery",
+            Position = new float[] { 0.01f, 0.01f, -0.00f }
+        },
+        new ModelPoint
+        {
+            Place = "PulmonaryVein",
+            Description = "Hilum: Area where blood vessels and bronchi enter the lungs.",
+            Id = "PulmonaryVein",
+            Position = new float[] { -0.02f, 0.005f, 0.00f }
+        },
+        new ModelPoint
+        {
+            Place = "AlveolarDuct",
+            Description = "Hilum: Area where blood vessels and bronchi enter the lungs.",
+            Id = "AlveolarDuct",
+            Position = new float[] { 0.04f, -0.01f, -0.01f }
+        },
+        new ModelPoint
+        {
+            Place = "Alveoli",
+            Description = "Hilum: Area where blood vessels and bronchi enter the lungs.",
+            Id = "Alveoli",
+            Position = new float[] { 0.04f, -0.015f, -0.01f }
         }
     };
 
