@@ -19,7 +19,7 @@
                 }
                 else
                 {
-                    <p>Click a point on the model to view details.</p>
+                    <p>Click a point on the eye model to view details.</p>
                 }
             </div>
         </div>
@@ -29,96 +29,169 @@
 @code {
     private ModelPoint? SelectedPoint;
 
-    private string ModelPath => "models/adult_heart.glb"; // Define the model path here
+    // Path to the eye.glb model
+    private string ModelPath => "models/nose.glb";
 
-    // Define 10 points for the heart model
+    // Define 10 points for the eye model
     private List<ModelPoint> ModelPoints => new()
-    {
+    { 
         new ModelPoint
         {
-            Place = "Left Ventricle",
-            Description = "Left Ventricle: Pumps oxygenated blood into the aorta.",
+            Place = "Nostrils",
+            Description = "Nostrils.",
+            Id = "point1",
+            Position = new float[] { -1.2f, -0.8f, 0.75f }
+        },
+        new ModelPoint
+        {
+            Place = "Nasal cavity", 
+            Description = "Nasal cavity",
             Id = "point2",
-            Position = new float[] { 0.33f, -0.19f, 0.38f }
+            Position = new float[] { -0.8f, -0.2f, 0.25f } 
         },
         new ModelPoint
         {
-            Place = "Right Atrium",
-            Description = "Right Atrium: Receives deoxygenated blood from the vena cava.",
+            Place = "Turbinates",
+            Description = "Turbinates",
             Id = "point3",
-            Position = new float[] { 0-.39f, 0.18f, 0.30f }
+            Position = new float[] { -0.2f, -0.5f, 0.0f } 
         },
         new ModelPoint
         {
-            Place = "Right Ventricle",
-            Description = "Right Ventricle: Pumps deoxygenated blood to the pulmonary arteries.",
+            Place = "Frontal sinus",
+            Description = "Frontal sinus",
             Id = "point4",
-            Position = new float[] { -0.34f, -0.37f, 0.34f }
+            Position = new float[] { -0.75f, 0.9f, 0.65f }
         },
         new ModelPoint
         {
-            Place = "Aorta",
-            Description = "Aorta: Main artery carrying oxygenated blood from the heart.",
+            Place = "Sphenoid sinus",
+            Description = "Sphenoid sinus",
             Id = "point5",
-            Position = new float[] { 0.21f, 0.77f, -0.01f }
+            Position = new float[] { 0.7f, 0.1f, 0.2f }
         },
         new ModelPoint
         {
-            Place = "Pulmonary Artery",
-            Description = "Pulmonary Artery: Carries deoxygenated blood to the lungs.",
+            Place = "Adenoid",
+            Description = "Adenoid",
             Id = "point6",
-            Position = new float[] { 0.38f, 0.52f, -0.11f }
+            Position = new float[] { 1.1f, -0.4f, 0.35f }
         },
         new ModelPoint
         {
-            Place = "Mitral Valve",
-            Description = "Mitral Valve: Regulates blood flow between left atrium and ventricle.",
+            Place = "Uvula",
+            Description = "Uvula",
             Id = "point7",
-            Position = new float[] { 0.38f, 0.26f, 0.05f }
+            Position = new float[] { 1.0f, -0.9f, 0.35f }
         },
         new ModelPoint
         {
-            Place = "Tricuspid Valve",
-            Description = "Tricuspid Valve: Regulates blood flow between right atrium and ventricle.",
+            Place = "Tonsil",
+            Description = "Tonsil",
             Id = "point8",
-            Position = new float[] { -0.09f, -0.05f, 0.43f }
+            Position = new float[] { 1.2f, -1.4f, 0.2f }
         },
         new ModelPoint
         {
-            Place = "Pulmonary Valve",
-            Description = "Pulmonary Valve: Controls blood flow from right ventricle to pulmonary artery.",
-            Id = "point9",
-            Position = new float[] { 0.03f, 0.14f, 0.39f }
+            Place = "Nasopharynx",
+            Description = "Nasopharynx",
+            Id = "point8",
+            Position = new float[] { 1.2f, -0.8f, 0.2f }
         },
         new ModelPoint
         {
-            Place = "Aortic Valve",
-            Description = "Aortic Valve: Controls blood flow from left ventricle to aorta.",
-            Id = "point10",
-            Position = new float[] { 0.33f, 0.02f, 0.25f }
-        },
-         new ModelPoint
-        {
-            Place = "Superior vena cava",
-            Description = "Superior vena cava",
-            Id = "point11",
-            Position = new float[] { -0.31f, 0.62f, 0.02f  }
+            Place = "Oropharynx",
+            Description = "Oropharynx",
+            Id = "point8",
+            Position = new float[] { 1.2f, -0.8f, 0.2f }
         },
         new ModelPoint
         {
-            Place = "Left Atrium",
-            Description = "Left Atrium: Receives oxygenated blood from the pulmonary veins.",
-            Id = "point12",
-            Position = new float[] { 0.30f, 0.37f, 0.02f  }
+            Place = "Hypopharynx",
+            Description = "Hypopharynx",
+            Id = "point8",
+            Position = new float[] { 1.4f, -1.4f, 0.2f }
         },
+        // new ModelPoint
+        // {
+        //     Place = "Pupil",
+        //     Description = "Pupil: Opening in the iris that regulates light entry.",
+        //     Id = "point3",
+        //     Position = new float[] { -0.12f, 0.16f, 0.67f }
+        // },
+        // new ModelPoint
+        // {
+        //     Place = "Lens",
+        //     Description = "Lens: Focuses light onto the retina.",
+        //     Id = "point4",
+        //     Position = new float[] { -0.03f, 0.10f, 0.7f }
+        // },
+        // new ModelPoint
+        // {
+        //     Place = "Retina",
+        //     Description = "Retina: Light-sensitive layer at the back of the eye.",
+        //     Id = "point5",
+        //     Position = new float[] { 0.0f, -0.05f, 0.0f }
+        // },
+        // new ModelPoint
+        // {
+        //     Place = "Optic Nerve",
+        //     Description = "Optic Nerve: Transmits visual information to the brain.",
+        //     Id = "point6",
+        //     Position = new float[] { -0.1f, -0.1f, -0.1f }
+        // },
+        // new ModelPoint
+        // {
+        //     Place = "Sclera",
+        //     Description = "Sclera: White outer protective layer of the eye.",
+        //     Id = "point7",
+        //     Position = new float[] { 0.3f, 0.10f, 0.6f }
+        // },
+        // new ModelPoint
+        // {
+        //     Place = "lateral rectus muscle",
+        //     Description = "lateral rectus muscle",
+        //     Id = "point8",
+        //     Position = new float[] { -0.57f, 0.07f, 0.28f }
+        // },
+        // new ModelPoint
+        // {
+        //     Place = "medial rectus muscle",
+        //     Description = "medial rectus muscle.",
+        //     Id = "point7",
+        //     Position = new float[] { 0.50f, 0.22f, 0.40f }
+        // },
+        // new ModelPoint
+        // {
+        //     Place = "Conjunctiva",
+        //     Description = "Conjunctiva: Thin membrane covering the sclera and inside eyelids.",
+        //     Id = "point8",
+        //     Position = new float[] { 0.1f, 0.1f, 0.1f }
+        // },
+        // new ModelPoint
+        // {
+        //     Place = "Macula",
+        //     Description = "Macula: Central area of the retina responsible for detailed vision.",
+        //     Id = "point9",
+        //     Position = new float[] { 0.0f, -0.1f, 0.0f }
+        // },
+        // new ModelPoint
+        // {
+        //     Place = "Choroid",
+        //     Description = "Choroid: Layer containing blood vessels between retina and sclera.",
+        //     Id = "point10",
+        //     Position = new float[] { 0.0f, -0.05f, -0.05f }
+        // },
+
     };
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            // Pass both the model path and model points to initThreeJs
+            // Initialize Three.js with the model path and points
             await JSRuntime.InvokeVoidAsync("initThreeJs", "threeCanvas", ModelPath, ModelPoints);
+            // Register the callback for point clicks
             await JSRuntime.InvokeVoidAsync("registerClickCallback", DotNetObjectReference.Create(this));
         }
     }
@@ -126,6 +199,7 @@
     [JSInvokable]
     public void OnPointClicked(string pointId)
     {
+        // Update the selected point and refresh the UI
         SelectedPoint = ModelPoints.FirstOrDefault(p => p.Id == pointId);
         StateHasChanged();
     }
